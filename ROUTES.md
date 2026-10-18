@@ -8,7 +8,7 @@ A simple class blog with session-based authentication, posts, comments and likes
 ├── .env                      ← DATABASE_URL //✅
 ├── drizzle.config.js //✅
 ├── index.js                  ← Express app entry (wiring only) //✅
-├── seed.js                   ← demo users/posts/comments/likes 
+├── seed.js                   ← demo users/posts/comments/likes  //✅
 ├── db/
 │   ├── index.js              ← pg Pool + drizzle client //✅
 │   └── schema.js             ← all tables + relations //✅
@@ -19,17 +19,17 @@ A simple class blog with session-based authentication, posts, comments and likes
 │   └── upload.js             ← multer image upload //✅
 ├── queries/                  ← ALL database access lives here
 │   ├── auth.queries.js //✅
-│   ├── post.queries.js
-│   └── comment.queries.js
+│   ├── post.queries.js //✅
+│   └── comment.queries.js //✅
 ├── routes/                   ← thin: middleware wiring + calls queries (never touches db)
 │   ├── auth.routes.js //✅
-│   ├── post.routes.js
-│   └── pages.routes.js
+│   ├── post.routes.js //✅
+│   └── pages.routes.js //✅
 ├── validation-schemas/
 │   ├── auth.js               ← hand-written Zod //✅
-│   └── posts.js              ← drizzle-zod (createInsertSchema)
-├── uploads/                  ← uploaded images land here (served statically)
-└── pages/                    ← static frontend (Tailwind CDN, fetch-based)
+│   └── posts.js              ← drizzle-zod (createInsertSchema) //✅
+├── uploads/                  ← uploaded images land here (served statically) //✅
+└── pages/                    ← static frontend (Tailwind CDN, fetch-based)//✅
 ```
 
 ## Packages
