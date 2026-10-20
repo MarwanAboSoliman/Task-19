@@ -1,26 +1,20 @@
-// seed.js — fills the database with demo data using drizzle-seed
-// Install:  npm i drizzle-seed
-// Run:      node seed.js
+
 import bcrypt from "bcrypt";
 import { seed, reset } from "drizzle-seed";
 import { db, pool } from "./db/index.js";
 import { users, posts, comments, likes } from "./db/schema.js";
 
-// Pass ONLY the tables (not the `relation` export). drizzle-seed reads the
-// foreign keys (posts.user_id → users.id, etc.) from the tables themselves.
+
 const schema = { users, posts, comments, likes };
 
-// likes is NOT given to drizzle-seed: its composite PK (post_id + user_id)
-// made the generator produce duplicate pairs. We insert likes ourselves below.
+
 const seededTables = { users, posts, comments };
 
-// Dates for created_at: within the last 30 days (instead of random 2022-2026)
 const maxDate = new Date();
 const minDate = new Date(Date.now() - 30 * 86_400_000);
 
 const DEMO_PASSWORD = "Password123!";
 
-// Images that already exist in your uploads/ folder
 const IMAGES = [
   "06c627a6-b509-4867-81f6-43da6d99d6e4.jpeg",
   "b0703765-c317-453e-9a55-145ef9809097.jpeg",
@@ -58,13 +52,13 @@ const COMMENTS = [
 ];
 
 async function main() {
-  // bcrypt hash for login — the same hash is reused for every demo user
+  // bcrypt hash for login 
   const passwordhash = await bcrypt.hash(DEMO_PASSWORD, 10);
 
-  console.log("🧹 Resetting tables...");
+  console.log("Resetting tables...");
   await reset(db, schema);
 
-  console.log("🌱 Seeding...");
+  console.log("Seeding...");
   await seed(db, seededTables, { seed: 1 }).refine((f) => ({
     users: {
       count: NAMES.length,
@@ -93,24 +87,24 @@ async function main() {
     comments: {
       count: 60,
       columns: {
-        // comments.content is varchar(255) — keep these short
+        
         content: f.valuesFromArray({ values: COMMENTS }),
         createdAt: f.date({ minDate, maxDate }),
       },
     },
   }));
 
-  // ---------- LIKES (manual, guaranteed unique) ----------
+  
   console.log(" Creating likes...");
   const allUsers = await db.select({ id: users.id }).from(users);
   const allPosts = await db.select({ id: posts.id }).from(posts);
 
-  // every possible (post, user) pair — each one appears only once
+  
   const pairs = allPosts.flatMap((p) =>
     allUsers.map((u) => ({ postId: p.id, userId: u.id })),
   );
 
-  // shuffle (Fisher-Yates), then take the first 80 → no duplicates possible
+  // shuffle (Fisher-Yates) with no dublicates
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
@@ -121,6 +115,11 @@ async function main() {
   console.log(` Login with e.g. marwan@example.com / ${DEMO_PASSWORD}`);
 }
 
+
+
+// async function main(){
+//   await reset(db,schema)
+// }
 main()
   .catch((err) => {
     console.error("Seed failed:", err);
